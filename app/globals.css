@@ -2,32 +2,46 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+    --background: 36 39% 88%;
+    --foreground: 36 45% 15%;
+    --primary: 36 45% 70%;
+    --primary-foreground: 36 45% 11%;
+    --secondary: 40 35% 77%;
+    --secondary-foreground: 36 45% 25%;
+    --accent: 36 64% 57%;
+    --accent-foreground: 36 72% 17%;
+    --destructive: 0 84% 37%;
+    --destructive-foreground: 0 0% 98%;
+    --muted: 36 33% 75%;
+    --muted-foreground: 36 45% 25%;
+    --card: 36 46% 82%;
+    --card-foreground: 36 45% 20%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --border: 36 45% 60%;
+    --input: 36 45% 60%;
+    --ring: 36 45% 30%;
+    --radius: 0rem;
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-}
+@layer base {
+  * {
+    @apply border-border;
+  }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  body {
+    @apply bg-background text-foreground font-body;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-heading;
   }
 }
