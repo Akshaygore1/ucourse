@@ -49,7 +49,6 @@ export default function CoursePage({ id }: { id: string }) {
                   <Chapter
                     title={chapter.title}
                     isCompleted={chapter.isCompleted}
-                    // isCompleted={true}
                     time={chapter.time}
                   />
                 </div>

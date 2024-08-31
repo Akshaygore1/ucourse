@@ -8,16 +8,24 @@ export function cn(...inputs: ClassValue[]) {
 export function formatTime(time: number) {
   const minutes = Math.floor(time / 60);
   const seconds = time % 60;
-  return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+  const hours = Math.floor(minutes / 60);
+  const minutesFormatted = minutes % 60;
+  const secondsFormatted = seconds < 10 ? "0" : "";
+  return `${hours}:${
+    minutesFormatted < 10 ? "0" : ""
+  }${minutesFormatted}:${secondsFormatted}${seconds}`;
 }
 
 export async function getVideoInfo(id: string, options = { chapters: true }) {
   const json = await getJSONFromHTML(`https://www.youtube.com/watch?v=${id}`);
   let result: any = { id };
-
   // Get total duration
   result.title =
     json.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.title.runs[0].text;
+
+  result.duration =
+    json.frameworkUpdates.entityBatchUpdate.mutations[0].payload
+      .macroMarkersListEntity.markersList.markers[0].durationMillis / 10;
 
   if (options.chapters) {
     let chapters = [];

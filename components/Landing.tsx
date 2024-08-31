@@ -36,24 +36,47 @@ export function Landing() {
   const [url, setUrl] = useState<string | null>(null);
 
   const handleClick = async () => {
-    console.log("CLICKes");
-    if (url) {
-      if (url.includes("youtube.com/watch?v=")) {
-        let videoId = url.split("v=")[1];
-        if (videoId.includes("&")) {
-          videoId = videoId.split("&")[0];
-        }
-        const data: VideoData = await getVideoInfo(videoId);
-        const isAvailable = localStorage.getItem(`video-${videoId}`);
-        if (!isAvailable) {
-          localStorage.setItem(`video-${videoId}`, JSON.stringify(data));
-        }
-      } else if (url.includes("youtube.com/playlist?list=")) {
-        const playlistId = url.split("list=")[1].split("&")[0];
-        // const playlistId = url.split("list=")[1];
-        // push(`/playlist/${playlistId}`);
-      }
+    if (!url) return;
+
+    try {
+      const videoId = extractVideoId(url);
+      if (!videoId) return;
+
+      const data = await getVideoInfo(videoId);
+      saveVideoData(videoId, data);
+    } catch (error) {
+      console.error("Error processing video:", error);
+      // Handle error (e.g., show user feedback)
     }
+  };
+
+  const extractVideoId = (url: string): string | null => {
+    const videoMatch = url.match(
+      /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/
+    );
+    return videoMatch ? videoMatch[1] : null;
+  };
+
+  const saveVideoData = (videoId: string, data: VideoData) => {
+    const storedData = localStorage.getItem(`video-${videoId}`);
+    if (storedData) return; // Data already exists, no need to save again
+
+    const processedChapters = data.chapters.chapters.map(
+      (chapter, index, arr) => ({
+        ...chapter,
+        isCompleted: false,
+        isUnlocked: true,
+        fromTime: chapter.time,
+        toTime: arr[index + 1]?.time || data.duration,
+      })
+    );
+
+    const dataToSave = {
+      ...data,
+      chapters: { ...data.chapters, chapters: processedChapters },
+    };
+
+    localStorage.setItem(`video-${videoId}`, JSON.stringify(dataToSave));
   };
 
   return (
