@@ -64,8 +64,9 @@ export function Landing() {
     const processedChapters = data.chapters.chapters.map(
       (chapter, index, arr) => ({
         ...chapter,
+        id: index + 1,
         isCompleted: false,
-        isUnlocked: true,
+        isUnlocked: index === 0 || false,
         fromTime: chapter.time,
         toTime: arr[index + 1]?.time || data.duration,
       })
