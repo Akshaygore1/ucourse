@@ -31,14 +31,26 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { getVideoInfo } from "@/lib/utils";
 import { VideoData } from "@/types/types";
+import { useToast } from "@/hooks/use-toast";
 
 export function Landing() {
   const [url, setUrl] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
 
   const handleClick = async () => {
-    if (!url) return;
+    if (!url) {
+      toast({
+        title: "Enter YouTube URL",
+        description: "Friday, February 10, 2023 at 5:57 PM",
+        variant: "destructive",
+      });
+
+      return;
+    }
 
     try {
+      setIsLoading(true);
       const videoId = extractVideoId(url);
       if (!videoId) return;
 
@@ -46,7 +58,19 @@ export function Landing() {
       saveVideoData(videoId, data);
     } catch (error) {
       console.error("Error processing video:", error);
-      // Handle error (e.g., show user feedback)
+      setIsLoading(false);
+      toast({
+        title: "Error processing video",
+        description: "Please try again later",
+        variant: "destructive",
+      });
+    } finally {
+      toast({
+        title: "Video added successfully",
+        description: "Check your course page to continue",
+        variant: "success",
+      });
+      setIsLoading(false);
     }
   };
 
@@ -121,7 +145,9 @@ export function Landing() {
                       className="max-w-lg flex-1"
                       onChange={(e) => setUrl(e.target.value)}
                     />
-                    <Button onClick={handleClick}>Go</Button>
+                    <Button onClick={handleClick}>
+                      {isLoading ? "Loading..." : "Go"}
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -139,24 +165,8 @@ export function Landing() {
       </main>
       <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
         <p className="text-xs text-muted-foreground">
-          &copy; 2024 Youcourse. All rights reserved.
+          <Link href="https://akshaygore.tech">Made By Akshay Gore</Link>
         </p>
-        <nav className="sm:ml-auto flex gap-4 sm:gap-6">
-          <Link
-            href="#"
-            className="text-xs hover:underline underline-offset-4"
-            prefetch={false}
-          >
-            Terms of Service
-          </Link>
-          <Link
-            href="#"
-            className="text-xs hover:underline underline-offset-4"
-            prefetch={false}
-          >
-            Privacy
-          </Link>
-        </nav>
       </footer>
     </div>
   );

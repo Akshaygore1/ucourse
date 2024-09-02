@@ -27,6 +27,7 @@ import { DM_Sans } from "next/font/google";
 import { Space_Mono } from "next/font/google";
 import { cn } from "@/lib/utils";
 import "./globals.css";
+import { Toaster } from "@/components/ui/toaster";
 
 const fontHeading = DM_Sans({
   subsets: ["latin"],
@@ -52,6 +53,7 @@ export default function RootLayout({
         className={cn("antialiased", fontHeading.variable, fontBody.variable)}
       >
         {children}
+        <Toaster />
       </body>
     </html>
   );
