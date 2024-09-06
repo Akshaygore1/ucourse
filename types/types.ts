@@ -28,3 +28,27 @@ export interface courseData {
   completed: number;
   videoId: string;
 }
+
+export interface PlaylistDetails {
+  id: string;
+  title: string;
+}
+
+export interface Item {
+  id: string;
+  title: string;
+  isCompleted: boolean;
+}
+
+export interface PlaylistData {
+  playlistDetails: PlaylistDetails;
+  items: Item[];
+  totalResults: number;
+}
+
+export interface playList {
+  id: string;
+  title: string;
+  chapters: number;
+  completed: number;
+}

@@ -31,7 +31,9 @@ function Chapter({ chapter, handleSelectChapter, isSelected }: ChapterProps) {
       onClick={() => chapter.isUnlocked && handleSelectChapter(chapter)}
     >
       <div className="font-semibold">{chapter.title}</div>
-      <div className="ml-auto text-sm">{formatTime(chapter.time)}</div>
+      {chapter.time && (
+        <div className="ml-auto text-sm">{formatTime(chapter.time)}</div>
+      )}
       {chapter.isCompleted && <span className="ml-2 text-green-600">✓</span>}
     </div>
   );

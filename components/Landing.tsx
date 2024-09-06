@@ -5,9 +5,9 @@ import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { VideoData } from "@/types/types";
+import { PlaylistData, VideoData } from "@/types/types";
 import { useToast } from "@/hooks/use-toast";
-import { processYouTubeUrl } from "@/actions";
+import { processYouTubePlaylistUrl, processYouTubeUrl } from "@/actions";
 
 export function Landing() {
   const [url, setUrl] = useState<string>("");
@@ -26,12 +26,26 @@ export function Landing() {
 
     try {
       setIsLoading(true);
-      const data = await processYouTubeUrl(url);
+      let data;
+      let playlistData;
+      if (url.includes("youtube.com/watch?v=")) {
+        data = await processYouTubeUrl(url);
+      } else if (url.includes("youtube.com/playlist?list=")) {
+        playlistData = await processYouTubePlaylistUrl(url);
+      }
 
       if (data) {
         saveVideoData(data);
         toast({
           title: "Video added successfully",
+          description: "Check your course page to continue",
+          variant: "success",
+        });
+      } else if (playlistData) {
+        console.log("playlistData ---", playlistData);
+        savePlaylistData(playlistData);
+        toast({
+          title: "Playlist added successfully",
           description: "Check your course page to continue",
           variant: "success",
         });
@@ -74,8 +88,25 @@ export function Landing() {
     localStorage.setItem(`video-${videoId}`, JSON.stringify(dataToSave));
   };
 
+  const savePlaylistData = (data: PlaylistData) => {
+    const playlistId = data.playlistDetails.id;
+    const storedData = localStorage.getItem(`playlist-${playlistId}`);
+    if (storedData) return; // Data already exists, no need to save again
+
+    const processedChapters = data.items.map((item, index, arr) => ({
+      ...item,
+      isCompleted: false,
+      isUnlocked: index === 0 || false,
+    }));
+    const updatedData = {
+      ...data,
+      items: processedChapters,
+    };
+    localStorage.setItem(`playlist-${playlistId}`, JSON.stringify(updatedData));
+  };
+
   return (
-    <div className="flex flex-col min-h-[100dvh]">
+    <div className="flex flex-col min-h-screen">
       <header className="px-4 lg:px-6 h-14 flex items-center justify-between">
         <Link href="#" className="flex items-center justify-center">
           <MountainIcon />
@@ -88,9 +119,9 @@ export function Landing() {
           My Course
         </Link>
       </header>
-      <main className="flex-1">
-        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">
-          <div className="container px-4 md:px-6">
+      <main className="flex-1 flex items-center">
+        <section className="w-full flex justify-center items-center">
+          <div className="px-4 md:px-6">
             <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
               <div className="flex flex-col justify-center space-y-4">
                 <div className="space-y-2">
@@ -117,14 +148,16 @@ export function Landing() {
                   </div>
                 </div>
               </div>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/placeholder.svg"
-                width="550"
-                height="310"
-                alt="Hero"
-                className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full lg:order-last"
-              />
+              <div className="flex flex-item-center justify-end bg-slate-50">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/placeholder.svg"
+                  width="550"
+                  height="310"
+                  alt="Hero"
+                  className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full lg:order-last"
+                />
+              </div>
             </div>
           </div>
         </section>

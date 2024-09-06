@@ -109,22 +109,82 @@ export function extractScriptContent(html: string, variableName: string) {
   throw new Error("Could not find script data");
 }
 
-export async function getPlaylistInfo(id: string) {
-  const json = await getJSONFromHTML(
-    `https://www.youtube.com/playlist?list=${id}`
-  );
-  let result: any = { id };
+export async function getPlaylistDetails(playlistId: string, apiKey: string) {
+  console.log("Fetching playlist details for ID:", playlistId);
+  try {
+    const encodedId = encodeURIComponent(playlistId);
+    const url = `https://www.googleapis.com/youtube/v3/playlists?part=snippet,contentDetails&id=${encodedId}&key=${apiKey}`;
 
-  // Get total duration
-  const playlistDetails = json.playlistSidebarRenderer;
-  if (playlistDetails) {
-    result.duration = parseInt(playlistDetails.videoCountText.runs[0].text, 10);
-    result.title = playlistDetails.title.simpleText;
+    console.log("Fetching playlist details from URL:", url);
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    if (!data.items || data.items.length === 0) {
+      throw new Error("Playlist not found");
+    }
+
+    const playlist = data.items[0];
+    return {
+      id: playlist.id,
+      title: playlist.snippet.title,
+    };
+  } catch (error) {
+    console.error("Error fetching playlist details:", error);
+    throw new Error(`Failed to fetch playlist details: ${error}`);
   }
-
-  return result;
 }
 
+export async function getPlaylistInfo(
+  playlistId: string,
+  apiKey: string,
+  pageToken: string = ""
+) {
+  console.log("Fetching playlist info for ID:", playlistId);
+  try {
+    // Fetch playlist details
+    const playlistDetails = await getPlaylistDetails(playlistId, apiKey);
+
+    // Fetch playlist items
+    const encodedId = encodeURIComponent(playlistId);
+    const itemsUrl = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${encodedId}&key=${apiKey}${
+      pageToken ? `&pageToken=${pageToken}` : ""
+    }`;
+
+    console.log("Fetching playlist items from URL:", itemsUrl);
+    const itemsResponse = await fetch(itemsUrl);
+
+    if (!itemsResponse.ok) {
+      throw new Error(`HTTP error! status: ${itemsResponse.status}`);
+    }
+
+    const itemsData = await itemsResponse.json();
+    if (!itemsData.items || itemsData.items.length === 0) {
+      throw new Error("No items found in playlist");
+    }
+
+    const items = itemsData.items.map((item: any) => {
+      return {
+        id: item.snippet.resourceId.videoId,
+        title: item.snippet.title,
+        isCompleted: false,
+      };
+    });
+    return {
+      playlistDetails,
+      items,
+      nextPageToken: itemsData.nextPageToken,
+      totalResults: itemsData.pageInfo.totalResults,
+    };
+  } catch (error) {
+    console.error("Error fetching playlist info:", error);
+    throw new Error(`Failed to fetch playlist info: ${error}`);
+  }
+}
 export function convertSecondsToHours(seconds: number) {
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
