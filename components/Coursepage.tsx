@@ -25,15 +25,19 @@ export default function EnhancedCoursePage({ id }: { id: string }) {
   const handleSelectChapter = (chapter: chapterTypes) => {
     setSelectedChapter(chapter);
     if (playerRef.current) {
-      playerRef.current.seekTo(chapter.fromTime, "seconds");
-      setPlaying(true);
+      if (chapter.fromTime) {
+        playerRef.current.seekTo(chapter.fromTime, "seconds");
+        setPlaying(true);
+      }
     }
   };
 
   const handleProgress = ({ playedSeconds }: { playedSeconds: number }) => {
-    if (selectedChapter && playedSeconds >= selectedChapter.toTime) {
-      setPlaying(false);
-      handleCompleteLesson();
+    if (selectedChapter?.toTime) {
+      if (selectedChapter && playedSeconds >= selectedChapter.toTime) {
+        setPlaying(false);
+        handleCompleteLesson();
+      }
     }
   };
 
