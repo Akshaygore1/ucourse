@@ -1,11 +1,11 @@
 export interface chapterTypes {
   id: number;
   title: string;
-  time: number;
+  time?: number;
   isCompleted: boolean;
   isUnlocked: boolean;
-  fromTime: number;
-  toTime: number;
+  fromTime?: number;
+  toTime?: number;
 }
 
 export interface Chapters {
