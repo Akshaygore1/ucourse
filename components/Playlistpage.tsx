@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
-// import { Item, PlaylistData } from "@/types/types";
 import Chapter from "./ui/chapter";
 import ReactPlayer from "react-player";
 import Link from "next/link";
@@ -24,10 +23,12 @@ interface Item {
 
 export default function PlaylistCoursePage({ id }: { id: string }) {
   const [playlistData, setPlaylistData] = useState<PlaylistData | null>(null);
-  const [selectedChapter, setSelectedChapter] = useState<Item | null>(null);
+  const [selectedChapterIndex, setSelectedChapterIndex] = useState<
+    number | null
+  >(null);
   const [playing, setPlaying] = useState(false);
   const playerRef = useRef<ReactPlayer | null>(null);
-  console.log("---", playlistData);
+
   useEffect(() => {
     const playlist = localStorage.getItem(`playlist-${id}`);
     if (playlist) {
@@ -35,28 +36,41 @@ export default function PlaylistCoursePage({ id }: { id: string }) {
     }
   }, [id]);
 
-  const handleSelectChapter = (chapter: Item) => {
-    setSelectedChapter(chapter);
+  const handleSelectChapter = (index: number) => {
+    setSelectedChapterIndex(index);
     setPlaying(true);
   };
 
   const handleCompleteLesson = () => {
-    if (selectedChapter && playlistData) {
-      const updatedItems = playlistData.items.map((item) =>
-        item.id === selectedChapter.id ? { ...item, isCompleted: true } : item
-      );
+    if (selectedChapterIndex !== null && playlistData) {
+      const updatedItems = playlistData.items.map((item, index) => {
+        if (index === selectedChapterIndex) {
+          return { ...item, isCompleted: true };
+        } else if (index === selectedChapterIndex + 1) {
+          return { ...item, isUnlocked: true };
+        }
+        return item;
+      });
       const updatedPlaylistData = { ...playlistData, items: updatedItems };
       setPlaylistData(updatedPlaylistData);
       localStorage.setItem(
         `playlist-${id}`,
         JSON.stringify(updatedPlaylistData)
       );
+
+      // Move to the next chapter if it exists
+      if (selectedChapterIndex < playlistData.items.length - 1) {
+        setSelectedChapterIndex(selectedChapterIndex + 1);
+      }
     }
   };
 
+  const selectedChapter =
+    selectedChapterIndex !== null
+      ? playlistData?.items[selectedChapterIndex]
+      : null;
   const videoId = selectedChapter?.id;
-  const url = "https://www.youtube.com/embed/" + videoId;
-  console.log("selectedChapter", selectedChapter);
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-[1fr_400px] gap-6 p-4 md:p-6 bg-background text-foreground">
       <div>
@@ -70,8 +84,8 @@ export default function PlaylistCoursePage({ id }: { id: string }) {
             <div className="rounded-lg overflow-hidden">
               <ReactPlayer
                 ref={playerRef}
-                url={`https://www.youtube.com/watch?v=j6szNSzw4BU`}
-                playing={true}
+                url={`https://www.youtube.com/watch?v=${videoId}`}
+                playing={playing}
                 controls={true}
                 width="100%"
                 height="70vh"
@@ -85,9 +99,7 @@ export default function PlaylistCoursePage({ id }: { id: string }) {
                 size="sm"
                 className="w-full"
                 onClick={handleCompleteLesson}
-                disabled={
-                  !selectedChapter.isUnlocked || selectedChapter.isCompleted
-                }
+                disabled={selectedChapter.isCompleted}
               >
                 {selectedChapter.isCompleted ? "Completed" : "Complete Lesson"}
               </Button>
@@ -105,12 +117,12 @@ export default function PlaylistCoursePage({ id }: { id: string }) {
         </div>
         <div className="p-4 space-y-2 max-h-[85vh] overflow-y-auto">
           <div className="flex flex-col gap-2">
-            {playlistData?.items.map((chapter) => (
+            {playlistData?.items.map((chapter, index) => (
               <Chapter
                 key={chapter.id}
                 chapter={chapter}
-                handleSelectChapter={handleSelectChapter}
-                isSelected={selectedChapter?.id === chapter.id}
+                handleSelectChapter={() => handleSelectChapter(index)}
+                isSelected={selectedChapterIndex === index}
               />
             ))}
           </div>
