@@ -129,15 +129,15 @@ export function Landing() {
                     Unlock Your Learning Potential with Youcourse
                   </h1>
                   <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                    Easily create and share your own online courses. Engage your
-                    audience and take your teaching to the next level.
+                    Transform YouTube Videos into Courses Instantly. Paste URL.
+                    Start Learning. For Free.
                   </p>
                 </div>
                 <div className="w-full max-w-sm space-y-2">
                   <div className="flex gap-2">
                     <Input
                       type="text"
-                      placeholder="Paste a YouTube URL"
+                      placeholder="Paste a YouTube URL or Playlist URL"
                       className="max-w-lg flex-1"
                       onChange={(e) => setUrl(e.target.value)}
                       value={url}
