@@ -109,7 +109,7 @@ export function Landing() {
     <div className="flex flex-col min-h-screen">
       <header className="px-4 lg:px-6 h-14 flex items-center justify-between">
         <Link href="#" className="flex items-center justify-center">
-          <MountainIcon />
+          <RightAlignedTriangleIcon />
           <span className="sr-only">Youcourse</span>
         </Link>
         <Link
@@ -171,7 +171,7 @@ export function Landing() {
   );
 }
 
-function MountainIcon() {
+function RightAlignedTriangleIcon() {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -184,7 +184,7 @@ function MountainIcon() {
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <path d="m8 3 4 8 5-5 5 15H2L8 3z" />
+      <path d="M21 12 L3 4 L3 20 Z" />
     </svg>
   );
 }

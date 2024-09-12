@@ -28,6 +28,7 @@ import { Space_Mono } from "next/font/google";
 import { cn } from "@/lib/utils";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import { Metadata } from "next";
 
 const fontHeading = DM_Sans({
   subsets: ["latin"],
@@ -41,6 +42,14 @@ const fontBody = Space_Mono({
   variable: "--font-body",
   weight: "400",
 });
+
+export const metadata: Metadata = {
+  title: "You Course",
+  description: "Your Fav Course From Youtube",
+  icons: {
+    icon: "/public/vercel.svg",
+  },
+};
 
 export default function RootLayout({
   children,
