@@ -148,15 +148,13 @@ export function Landing() {
                   </div>
                 </div>
               </div>
-              <div className="flex flex-item-center justify-end bg-slate-50">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/placeholder.svg"
-                  width="550"
-                  height="310"
-                  alt="Hero"
-                  className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full lg:order-last"
-                />
+              <div className="aspect-video w-full">
+                <iframe
+                  src="https://www.youtube.com/embed/GZOTLYDNUuI"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full rounded-xl"
+                ></iframe>
               </div>
             </div>
           </div>
