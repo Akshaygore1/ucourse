@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     icon: "/public/vercel.svg",
   },
   openGraph: {
-    images: "/public/og_image.png",
+    images: "/og_image.png",
   },
 };
 
