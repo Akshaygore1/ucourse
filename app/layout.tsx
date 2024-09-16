@@ -49,6 +49,9 @@ export const metadata: Metadata = {
   icons: {
     icon: "/public/vercel.svg",
   },
+  openGraph: {
+    images: "/public/og_image.png",
+  },
 };
 
 export default function RootLayout({
