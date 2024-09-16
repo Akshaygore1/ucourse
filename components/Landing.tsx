@@ -1,18 +1,29 @@
-// app/page.tsx
 "use client";
 
+import React, { useState } from "react";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
 import { PlaylistData, VideoData } from "@/types/types";
 import { useToast } from "@/hooks/use-toast";
 import { processYouTubePlaylistUrl, processYouTubeUrl } from "@/actions";
+import ReactPlayer from "react-player";
 
 export function Landing() {
   const [url, setUrl] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const { toast } = useToast();
+
+  const handlePlay = () => {
+    setIsPlaying(true);
+  };
+
+  const videoUrl = "https://www.youtube.com/watch?v=GZOTLYDNUuI";
+
+  const handlePause = () => {
+    setIsPlaying(false);
+  };
 
   const handleClick = async () => {
     if (!url) {
@@ -148,13 +159,37 @@ export function Landing() {
                   </div>
                 </div>
               </div>
-              <div className="aspect-video w-full">
-                <iframe
-                  src="https://www.youtube.com/embed/GZOTLYDNUuI"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="w-full h-full rounded-xl"
-                ></iframe>
+              <div className="aspect-video w-full relative overflow-hidden rounded-xl">
+                <ReactPlayer
+                  url={videoUrl}
+                  width="100%"
+                  height="100%"
+                  playing={isPlaying}
+                  onPlay={handlePlay}
+                  onPause={handlePause}
+                  config={{
+                    youtube: {
+                      playerVars: { showinfo: 1, controls: 0 },
+                    },
+                  }}
+                />
+                {!isPlaying && (
+                  <div
+                    className="absolute inset-0 flex items-center justify-center cursor-pointer z-20"
+                    onClick={handlePlay}
+                  >
+                    <div className="absolute inset-0 bg-black opacity-50 backdrop-blur-md"></div>
+                    <div className="relative z-30 w-20 h-20 bg-white bg-opacity-25 rounded-full flex items-center justify-center border-2 border-white">
+                      <svg
+                        className="w-10 h-10 text-white"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
