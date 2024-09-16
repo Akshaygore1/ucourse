@@ -91,7 +91,7 @@ export default function MyCourses() {
           key={course.id}
           className="bg-card text-card-foreground shadow-md hover:shadow-lg transition-shadow duration-300"
         >
-          <CardContent className="space-y-3 p-6">
+          <CardContent className="h-full flex flex-col justify-between p-6">
             <div className="flex items-center justify-between">
               <h3 className="text-xl font-semibold">{course.title}</h3>
             </div>
