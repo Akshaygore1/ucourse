@@ -26,16 +26,18 @@ function Chapter({ chapter, handleSelectChapter, isSelected }: ChapterProps) {
   };
 
   return (
-    <div
-      className={getChapterStyles()}
-      onClick={() => chapter.isUnlocked && handleSelectChapter(chapter)}
-    >
-      <div className="font-semibold">{chapter.title}</div>
-      {chapter.time && (
-        <div className="ml-auto text-sm">{formatTime(chapter.time)}</div>
-      )}
-      {chapter.isCompleted && <span className="ml-2 text-green-600">✓</span>}
-    </div>
+    <>
+      <button
+        className={getChapterStyles()}
+        onClick={() => chapter.isUnlocked && handleSelectChapter(chapter)}
+      >
+        <div className="font-semibold text-start">{chapter.title}</div>
+        {chapter.time && (
+          <div className="ml-auto text-sm">{formatTime(chapter.time)}</div>
+        )}
+        {chapter.isCompleted && <span className="ml-2 text-green-600">✓</span>}
+      </button>
+    </>
   );
 }
 
