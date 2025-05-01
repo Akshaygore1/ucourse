@@ -3,7 +3,7 @@
 import { redirect, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useVideoStore } from "../store/store";
-import { CircleArrowRight } from "lucide-react";
+import { CircleArrowRight, Youtube } from "lucide-react";
 
 export default function Home() {
   const [url, setUrl] = useState<string | null>(null);
@@ -21,50 +21,55 @@ export default function Home() {
       }
       if (url.includes("youtube.com/playlist?list=")) {
         const playlistId = url.split("list=")[1].split("&")[0];
-        // const playlistId = url.split("list=")[1];
         push(`/playlist/${playlistId}`);
       }
     }
   };
 
   return (
-    <main className="relative h-screen w-screen bg-black">
-      <div className="absolute top-4 right-4 z-20">
+    <main className="min-h-screen bg-gradient-to-b from-zinc-900 to-black">
+      {/* Navigation */}
+      <nav className="absolute top-0 left-0 right-0 p-6 flex justify-between items-center">
+        <div className="flex items-center gap-2">
+          <Youtube className="text-red-600" size={32} />
+          <span className="text-xl font-bold text-white">YouCourse</span>
+        </div>
         <button
           onClick={() => push("/mycourse")}
-          className="px-4 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-600 transition duration-300"
+          className="px-4 py-2 bg-zinc-800 text-white rounded-lg hover:bg-zinc-700 transition-colors"
         >
           My Courses
         </button>
-      </div>
-      <div className="flex justify-center items-center flex-col h-full">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]"></div>
-        <div className="absolute left-0 right-0 top-[-10%] h-[800px] w-[800px] rounded-full bg-[radial-gradient(circle_400px_at_50%_200px,#fbfbfb36,#000)]"></div>
-        <h2 className="relative z-10 text-center text-4xl font-semibold text-gray-50 sm:text-6xl mb-4">
-          Welcome to
-          <span className="text-red-600"> Youcourse</span>
-        </h2>
-        <div className="relative z-10 text-2xl inline-flex bg-gradient-to-r  bg-[200%_auto] bg-clip-text leading-tight text-transparent from-neutral-100 via-slate-400 to-neutral-400 animate-text-gradient">
-          Transform YouTube Videos into Structured Courses
-        </div>
-        <div className="relative z-10 mt-8 w-full max-w-md px-4">
-          <input
-            type="text"
-            placeholder="Enter YouTube Video Url Or Playlist Url"
-            onChange={(e) => setUrl(e.target.value)}
-            className="w-full p-3 text-black rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        <div className="relative z-10 mt-4">
-          <button
-            onClick={handleClick}
-            className="px-6 py-3 gap-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-600 transition duration-300 flex flex-row justify-center items-center"
-          >
-            Convert to Course
-            <span>
-              <CircleArrowRight />
-            </span>
-          </button>
+      </nav>
+
+      {/* Hero Section */}
+      <div className="h-screen flex items-center justify-center">
+        <div className="max-w-3xl mx-auto text-center px-4">
+          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
+            Transform YouTube into
+            <span className="text-red-600"> Structured Learning</span>
+          </h1>
+
+          <p className="text-xl text-zinc-400 mb-12">
+            Convert any YouTube video or playlist into an organized course with
+            chapters, progress tracking, and more.
+          </p>
+
+          <div className="flex flex-col md:flex-row gap-4 max-w-2xl mx-auto">
+            <input
+              type="text"
+              placeholder="Paste YouTube video or playlist URL"
+              onChange={(e) => setUrl(e.target.value)}
+              className="flex-1 p-4 rounded-lg bg-zinc-800 text-white placeholder-zinc-500 border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+            />
+            <button
+              onClick={handleClick}
+              className="px-8 py-4 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center gap-2"
+            >
+              Convert to Course
+              <CircleArrowRight size={20} />
+            </button>
+          </div>
         </div>
       </div>
     </main>
