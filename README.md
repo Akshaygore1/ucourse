@@ -1,72 +1,34 @@
-# ucourse
+# Youcourse
+### Convert Youtube Video To Course
 
-## 📝 Description
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app). Built with React, Next.js. Written in TypeScript, CSS, JavaScript.
+## Overview
 
-## 🔧 Technologies Used
-- TypeScript
-- CSS
-- JavaScript
-- React
-- Next.js
+This Next.js 14 project converts long YouTube videos with timestamps into trackable courses. Users can monitor their progress through the course content, and future updates will include support for converting entire YouTube playlists into comprehensive courses.
 
-## 📦 Installation
-```sh
-git clone https://github.com/Akshaygore1/ucourse.git
-cd ucourse
-npm install
-```
-## 📂 Project Structure
-```
-├── actions.ts
-├── app
-│   ├── globals.css
-│   ├── layout.tsx
-│   ├── my-course
-│   │   ├── page.tsx
-│   ├── page.tsx
-│   ├── playlist
-│   │   ├── [id]
-│   │   │   ├── page.tsx
-│   ├── video
-│   │   ├── [id]
-│   │   │   ├── page.tsx
-├── bun.lockb
-├── components.json
-├── components
-│   ├── Coursepage.tsx
-│   ├── Landing.tsx
-│   ├── Mycourse.tsx
-│   ├── Playlistpage.tsx
-│   ├── ui
-│   │   ├── button.tsx
-│   │   ├── card.tsx
-│   │   ├── chapter.tsx
-│   │   ├── input.tsx
-│   │   ├── slider.tsx
-│   │   ├── sonner.tsx
-│   │   ├── toast.tsx
-│   │   ├── toaster.tsx
-├── hooks
-│   ├── use-toast.ts
-├── lib
-│   ├── utils.ts
-├── package.json
-├── public
-├── types
-│   ├── types.ts
+## Features
 
-```
+- Convert YouTube videos with timestamps into structured courses
+- Track progress through course content
+- Responsive design using Tailwind CSS
+- State management with Zustand
+- Built with Next.js 14 for optimal performance and SEO
 
-## 🤝 Contribution
-We welcome contributions! Here's how you can contribute:
+## Tech Stack
 
-1.  Fork the repository.
-2.  Create a new branch for your feature or bug fix.
-3.  Make your changes and commit them.
-4.  Push your changes to your fork.
-5.  Submit a pull request.
+- [Next.js 14](https://nextjs.org/)
+- [React](https://reactjs.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Zustand](https://github.com/pmndrs/zustand)
+- [YouTube API](https://developers.google.com/youtube/v3)
 
-## ❤️ Support
-Thank you for checking out ucourse! If you find it useful, consider giving it a star on GitHub!
+## Contribution
+
+- Clone Project
+- just do npm install
+- and npm run dev
+
+## Future Enhancements
+
+- Add support for converting YouTube playlists into courses
+- Create a dashboard for managing multiple courses
 
