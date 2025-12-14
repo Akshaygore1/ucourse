@@ -1,9 +1,10 @@
 "use client";
 
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useVideoStore } from "../store/store";
+import { useVideoStore } from "@/store/store";
 import { CircleArrowRight, Youtube } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 export default function Home() {
   const [url, setUrl] = useState<string | null>(null);
@@ -27,30 +28,27 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-zinc-900 to-black">
+    <main className="min-h-screen bg-gradient-to-b from-background via-background to-black">
       {/* Navigation */}
       <nav className="absolute top-0 left-0 right-0 p-6 flex justify-between items-center">
         <div className="flex items-center gap-2">
-          <Youtube className="text-red-600" size={32} />
-          <span className="text-xl font-bold text-white">YouCourse</span>
+          <Youtube className="text-destructive" size={32} />
+          <span className="text-xl font-bold text-foreground">YouCourse</span>
         </div>
-        <button
-          onClick={() => push("/mycourse")}
-          className="px-4 py-2 bg-zinc-800 text-white rounded-lg hover:bg-zinc-700 transition-colors"
-        >
+        <Button onClick={() => push("/mycourse")} variant="secondary">
           My Courses
-        </button>
+        </Button>
       </nav>
 
       {/* Hero Section */}
       <div className="h-screen flex items-center justify-center">
         <div className="max-w-3xl mx-auto text-center px-4">
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
+          <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-6">
             Transform YouTube into
-            <span className="text-red-600"> Structured Learning</span>
+            <span className="text-destructive"> Structured Learning</span>
           </h1>
 
-          <p className="text-xl text-zinc-400 mb-12">
+          <p className="text-xl text-muted-foreground mb-12">
             Convert any YouTube video or playlist into an organized course with
             chapters, progress tracking, and more.
           </p>
@@ -60,15 +58,17 @@ export default function Home() {
               type="text"
               placeholder="Paste YouTube video or playlist URL"
               onChange={(e) => setUrl(e.target.value)}
-              className="flex-1 p-4 rounded-lg bg-zinc-800 text-white placeholder-zinc-500 border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="flex-1 p-4 rounded-lg bg-secondary text-secondary-foreground placeholder-muted-foreground border border-border focus:outline-none focus:ring-2 focus:ring-destructive"
             />
-            <button
+            <Button
               onClick={handleClick}
-              className="px-8 py-4 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center gap-2"
+              size="lg"
+              variant="default"
+              className="h-auto py-4 text-base"
             >
               Convert to Course
-              <CircleArrowRight size={20} />
-            </button>
+              <CircleArrowRight size={20} className="ml-2" />
+            </Button>
           </div>
         </div>
       </div>

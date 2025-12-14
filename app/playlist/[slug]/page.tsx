@@ -1,5 +1,3 @@
-import { getPlaylistInfo } from "@/app/utils";
-
 export default async function Page({ params }: { params: { slug: string } }) {
   // fetch playlist info using youtube api
   const url = `https://yt.lemnoslife.com/playlistItems?part=snippet&playlistId=${params.slug}`;

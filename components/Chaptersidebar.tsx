@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
-import Progressbar from "@/app/_component/Progressbar";
-import Chapterlist from "@/app/_component/Chapterlist";
+import Progressbar from "@/components/Progressbar";
+import Chapterlist from "@/components/Chapterlist";
 
 interface Thumbnail {
   url: string;
@@ -37,7 +37,7 @@ export default function Chaptersidebar({
             <Chapterlist data={data} duration={duration} videoId={videoId} />
           </div>
         ) : (
-          <div className="p-4 text-white">No chapters</div>
+          <div className="p-4 text-muted-foreground">No chapters</div>
         )}
       </div>
     </div>

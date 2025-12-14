@@ -55,7 +55,7 @@ export default function MyCourses({
                 title={parsedData.title}
                 duration={parsedData.duration}
                 chapters={parsedData.chapters}
-                videoId={key.split("-")[1]}
+                videoId={key.split("video-")[1]}
                 key={key}
               />
             );
@@ -64,7 +64,7 @@ export default function MyCourses({
         })
       ) : (
         <div className="w-full h-full flex justify-center items-center">
-          <p className="text-white-700 text-2xl">No courses found</p>
+          <p className="text-muted-foreground text-2xl">No courses found</p>
         </div>
       )}
     </div>

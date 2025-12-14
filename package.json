@@ -9,22 +9,28 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ai-sdk/google": "^2.0.46",
     "@uidotdev/usehooks": "^2.4.1",
+    "ai": "^5.0.113",
+    "clsx": "^2.1.1",
     "lucide-react": "^0.400.0",
     "next": "14.2.4",
     "react": "^18",
     "react-dom": "^18",
     "react-player": "^2.16.0",
+    "tailwind-merge": "^3.4.0",
+    "zod": "^4.1.13",
     "zustand": "^4.5.4"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.0.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "14.2.4",
     "postcss": "^8",
-    "tailwindcss": "^3.4.1",
+    "tailwindcss": "^4.0.0",
     "typescript": "^5"
   }
 }

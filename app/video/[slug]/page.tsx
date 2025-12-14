@@ -1,7 +1,6 @@
 "use client";
-import Chaptersidebar from "@/app/_component/Chaptersidebar";
-import VideoPlayer from "@/app/_component/VideoPlayer";
-import { getVideoInfo } from "@/app/utils";
+import Chaptersidebar from "@/components/Chaptersidebar";
+import VideoPlayer from "@/components/VideoPlayer";
 import { useVideoStore } from "@/store/store";
 import React, { useEffect, useState } from "react";
 
@@ -36,7 +35,7 @@ export default function Page({ params }: { params: { slug: string } }) {
     }
   }, [params.slug, setVideoId, selectedVideo]);
   return (
-    <div className="flex flex-row gap-2 max-h-screen h-screen overflow-hidden bg-[#292929]">
+    <div className="flex flex-row gap-2 max-h-screen h-screen overflow-hidden bg-background">
       <div className="flex flex-col gap-2 w-3/4 overflow-y-auto">
         <VideoPlayer />
       </div>

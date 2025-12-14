@@ -1,5 +1,5 @@
-import Mycources from "@/app/_component/Mycources";
-import { getVideoInfo } from "@/app/utils";
+import { getVideoInfo } from "@/lib/video-service";
+import Mycources from "@/components/Mycources";
 import { VideoData } from "@/types";
 
 export default async function MyCoursePage({
