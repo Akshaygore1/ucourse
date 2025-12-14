@@ -1,5 +1,5 @@
 @import "tailwindcss";
-/* @config "../tailwind.config.ts"; */
+@config "../tailwind.config.ts";
 
 :root {
   --background: oklch(0.1822 0 0);
@@ -8,7 +8,7 @@
   --card-foreground: oklch(0.9288 0.0126 255.5078);
   --popover: oklch(0.2603 0 0);
   --popover-foreground: oklch(0.7348 0 0);
-  --primary: oklch(0.4365 0.1044 156.7556);
+  --primary: oklch(0.577 0.245 27.325);
   --primary-foreground: oklch(0.9213 0.0135 167.1556);
   --secondary: oklch(0.2603 0 0);
   --secondary-foreground: oklch(0.9851 0 0);

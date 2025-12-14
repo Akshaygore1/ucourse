@@ -60,7 +60,7 @@ export default function ChapterCard({
           ? "cursor-pointer hover:bg-accent hover:border-accent-foreground/50"
           : "cursor-not-allowed opacity-60 bg-muted/30 border-border",
         isActive
-          ? "bg-accent border-primary ring-1 ring-primary"
+          ? "bg-amber-500/10 border-amber-500/40 ring-1 ring-amber-500/20"
           : "bg-card border-border"
       )}
     >
@@ -70,7 +70,7 @@ export default function ChapterCard({
           className={cn(
             "flex items-center justify-center w-8 h-8 rounded-full shrink-0",
             isActive
-              ? "bg-primary/20 text-primary"
+              ? "bg-amber-500/15 text-amber-400"
               : isCompleted
               ? "bg-green-500/10 text-green-400"
               : isUnlocked
@@ -98,7 +98,7 @@ export default function ChapterCard({
             className={cn(
               "text-sm font-medium truncate pr-2",
               isActive
-                ? "text-primary"
+                ? "text-amber-400"
                 : isUnlocked
                 ? "text-foreground"
                 : "text-muted-foreground"
@@ -109,7 +109,7 @@ export default function ChapterCard({
           <span
             className={cn(
               "text-xs font-medium",
-              isActive ? "text-primary/80" : "text-muted-foreground"
+              isActive ? "text-amber-400/70" : "text-muted-foreground"
             )}
           >
             {formattedDuration}
