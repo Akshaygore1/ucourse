@@ -1,6 +1,4 @@
-import Mycources from "@/app/_component/Mycources";
-import { getVideoInfo } from "@/app/utils";
-import { VideoData } from "@/types";
+import MyCourses from "@/components/Mycourses";
 
 export default async function MyCoursePage({
   params,
@@ -8,8 +6,8 @@ export default async function MyCoursePage({
   params: { slug: string };
 }) {
   return (
-    <div className="flex flex-col items-center bg-neutral-950 justify-center h-screen">
-      <Mycources />
+    <div className="flex flex-col items-center bg-background justify-center h-screen">
+      <MyCourses />
     </div>
   );
 }

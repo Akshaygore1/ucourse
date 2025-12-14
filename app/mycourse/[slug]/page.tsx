@@ -1,5 +1,5 @@
-import Mycources from "@/app/_component/Mycources";
-import { getVideoInfo } from "@/app/utils";
+import { getVideoInfo } from "@/lib/video-service";
+import MyCourses from "@/components/Mycourses";
 import { VideoData } from "@/types";
 
 export default async function MyCoursePage({
@@ -15,7 +15,7 @@ export default async function MyCoursePage({
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-      <Mycources data={data} duration={duration} videoId={params.slug} />
+      <MyCourses data={data} duration={duration} videoId={params.slug} />
     </div>
   );
 }

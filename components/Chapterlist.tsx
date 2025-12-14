@@ -1,7 +1,8 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import ChapterCard from "./Chapter";
 import { Chapter } from "@/types";
+import { cn } from "@/utils";
 
 export default function Chapterlist({
   data,
@@ -13,7 +14,7 @@ export default function Chapterlist({
   videoId: string;
 }) {
   return (
-    <div className="p-4 flex flex-col gap-2">
+    <div className={cn("flex flex-col gap-3 p-4 w-full")}>
       {data.map((chapter: Chapter, index: number, arr: Chapter[]) => (
         <ChapterCard
           title={chapter.title}
