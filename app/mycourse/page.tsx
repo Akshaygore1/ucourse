@@ -1,4 +1,4 @@
-import Mycources from "@/components/Mycources";
+import MyCourses from "@/components/Mycourses";
 
 export default async function MyCoursePage({
   params,
@@ -7,7 +7,7 @@ export default async function MyCoursePage({
 }) {
   return (
     <div className="flex flex-col items-center bg-background justify-center h-screen">
-      <Mycources />
+      <MyCourses />
     </div>
   );
 }
