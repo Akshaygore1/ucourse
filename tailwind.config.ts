@@ -39,6 +39,10 @@ const config: Config = {
           DEFAULT: "var(--destructive)",
           foreground: "var(--destructive-foreground)",
         },
+        active: {
+          DEFAULT: "var(--active)",
+          foreground: "var(--active-foreground)",
+        },
         border: "var(--border)",
         input: "var(--input)",
         ring: "var(--ring)",
