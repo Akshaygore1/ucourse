@@ -7,7 +7,7 @@ export interface Thumbnail {
 export interface Chapter {
   title: string;
   time: number;
-  thumbnails: Thumbnail[];
+  thumbnails?: Thumbnail[];
   isCompleted: boolean;
   isUnlocked: boolean;
 }

@@ -1,4 +1,22 @@
-import { VideoData } from "@/types";
+import { VideoData, Chapter } from "@/types";
+
+const apiKey = process.env.YOUTUBE_API_KEY;
+
+// Parse ISO 8601 duration format (PT1H30M15S) to seconds
+function parseISO8601Duration(isoDuration: string): number {
+  if (!isoDuration || !isoDuration.startsWith("PT")) return 0;
+
+  const regex = /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/;
+  const match = isoDuration.match(regex);
+
+  if (!match) return 0;
+
+  const hours = parseInt(match[1] || "0", 10);
+  const minutes = parseInt(match[2] || "0", 10);
+  const seconds = parseInt(match[3] || "0", 10);
+
+  return hours * 3600 + minutes * 60 + seconds;
+}
 
 function parseDurationToSeconds(durationStr: string): number {
   if (!durationStr) return 0;
@@ -37,249 +55,70 @@ function parseChaptersFromDescription(
   return chapters;
 }
 
-function extractJSONFromScript(html: string, variableName: string): any {
-  // Try multiple patterns
-  const patterns = [
-    `var ${variableName} = `,
-    `window["${variableName}"] = `,
-    `window.${variableName} = `,
-    `${variableName} = `,
-  ];
-
-  for (const pattern of patterns) {
-    const startIndex = html.indexOf(pattern);
-    if (startIndex !== -1) {
-      const jsonStartIndex = startIndex + pattern.length;
-
-      // Find the start of the JSON object (first {)
-      let objectStart = jsonStartIndex;
-      while (objectStart < html.length && html[objectStart] !== "{") {
-        objectStart++;
-      }
-
-      if (objectStart >= html.length) continue;
-
-      // Now find the matching closing brace by counting braces
-      let braceCount = 0;
-      let inString = false;
-      let escapeNext = false;
-      let validEnd = -1;
-
-      for (let i = objectStart; i < html.length; i++) {
-        const char = html[i];
-
-        if (escapeNext) {
-          escapeNext = false;
-          continue;
-        }
-
-        if (char === "\\") {
-          escapeNext = true;
-          continue;
-        }
-
-        if (char === '"' && !escapeNext) {
-          inString = !inString;
-          continue;
-        }
-
-        if (!inString) {
-          if (char === "{") {
-            braceCount++;
-          } else if (char === "}") {
-            braceCount--;
-            if (braceCount === 0) {
-              validEnd = i + 1;
-              break;
-            }
-          }
-        }
-      }
-
-      if (validEnd > objectStart) {
-        let jsonString = html.substring(objectStart, validEnd);
-
-        // Clean up the string
-        jsonString = jsonString.trim();
-
-        // Try to parse
-        try {
-          return JSON.parse(jsonString);
-        } catch (e) {
-          // If parsing fails, try to clean up common issues
-          // Remove trailing semicolons and whitespace
-          jsonString = jsonString.replace(/;\s*$/, "");
-          try {
-            return JSON.parse(jsonString);
-          } catch (e2) {
-            // Log for debugging but continue to next pattern
-            const errorMsg = e2 instanceof Error ? e2.message : String(e2);
-            console.warn(`Failed to parse ${variableName}:`, errorMsg);
-            continue;
-          }
-        }
-      }
-    }
+export async function getVideoInfo(videoId: string) {
+  if (!apiKey) {
+    throw new Error("YouTube API key is required");
   }
 
-  return null;
-}
-
-export async function getVideoInfo(id: string): Promise<VideoData> {
-  console.log("Fetching video info for", id);
-  const videoId =
-    id.startsWith("http") && id.includes("v=")
-      ? id.split("v=")[1].split("&")[0]
-      : id;
-
-  const url = `https://www.youtube.com/watch?v=${videoId}`;
-
   try {
-    // Add browser-like headers to avoid bot detection
-    const response = await fetch(url, {
-      cache: "no-store",
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        Accept:
-          "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-        "Accept-Language": "en-US,en;q=0.9",
-        "Accept-Encoding": "gzip, deflate, br",
-        Referer: "https://www.youtube.com/",
-        "Sec-Fetch-Dest": "document",
-        "Sec-Fetch-Mode": "navigate",
-        "Sec-Fetch-Site": "none",
-      },
-    });
+    // YouTube Data API v3 endpoint
+    const apiUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=${videoId}&key=${apiKey}`;
+
+    const response = await fetch(apiUrl);
 
     if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
       throw new Error(
-        `Failed to fetch YouTube page: ${response.status} ${response.statusText}`
+        `YouTube API request failed: ${response.status} - ${
+          errorData.error?.message || response.statusText
+        }`
       );
     }
 
-    const html = await response.text();
+    const data = await response.json();
 
-    // Try to extract ytInitialPlayerResponse using regex as additional fallback
-    let data = extractJSONFromScript(html, "ytInitialPlayerResponse");
-
-    // If that fails, try regex-based extraction (without dotAll flag for compatibility)
-    if (!data) {
-      const regex = /var ytInitialPlayerResponse\s*=\s*({[\s\S]+?});/;
-      const match = html.match(regex);
-      if (match && match[1]) {
-        try {
-          data = JSON.parse(match[1]);
-        } catch (e) {
-          console.warn("Regex extraction failed:", e);
-        }
-      }
+    if (!data.items || data.items.length === 0) {
+      throw new Error("Video not found");
     }
 
-    // If that fails, try ytInitialData as fallback
-    if (!data) {
-      console.warn("ytInitialPlayerResponse not found, trying ytInitialData");
-      data = extractJSONFromScript(html, "ytInitialData");
+    const item = data.items[0];
+    const snippet = item.snippet;
+    const contentDetails = item.contentDetails;
 
-      if (data) {
-        // Extract video details from ytInitialData structure
-        const videoDetails =
-          data?.contents?.twoColumnWatchNextResults?.results?.results
-            ?.contents?.[0]?.videoPrimaryInfoRenderer;
+    // Extract title
+    const title = snippet.title || "Unknown Title";
 
-        if (videoDetails) {
-          const title =
-            videoDetails.title?.runs?.[0]?.text ||
-            videoDetails.title?.simpleText ||
-            "Unknown Title";
+    // Extract description
+    const description = snippet.description || "";
 
-          // Try to get description from videoSecondaryInfoRenderer
-          const secondaryInfo =
-            data?.contents?.twoColumnWatchNextResults?.results?.results
-              ?.contents?.[1]?.videoSecondaryInfoRenderer;
+    // Extract duration (ISO 8601 format: PT1H30M15S)
+    const isoDuration = contentDetails.duration;
+    const duration = parseISO8601Duration(isoDuration);
 
-          const description =
-            secondaryInfo?.description?.runs
-              ?.map((run: any) => run.text)
-              .join("") ||
-            secondaryInfo?.description?.simpleText ||
-            "";
+    // Parse chapters from description
+    const parsedChapters = parseChaptersFromDescription(description);
 
-          // Try to get duration from videoDetails or player
-          let durationSeconds = 0;
-          const playerResponse =
-            data?.playerResponse?.videoDetails || data?.player?.videoDetails;
+    // Transform chapters to match Chapter interface
+    const chapters: Chapter[] = parsedChapters.map((chapter) => ({
+      title: chapter.title,
+      time: chapter.time,
+      thumbnails: [], // Empty array since YouTube API doesn't provide chapter thumbnails
+      isCompleted: false,
+      isUnlocked: false,
+    }));
 
-          if (playerResponse?.lengthSeconds) {
-            durationSeconds = parseInt(playerResponse.lengthSeconds, 10) || 0;
-          }
-
-          const chaptersList = parseChaptersFromDescription(description);
-
-          return {
-            id: videoId,
-            duration: durationSeconds,
-            title: title,
-            chapters: {
-              areAutoGenerated: false,
-              chapters: chaptersList.map((c) => ({
-                title: c.title,
-                time: c.time,
-                thumbnails: [],
-                isCompleted: false,
-                isUnlocked: false,
-              })),
-            },
-          };
-        }
-      }
-    }
-
-    // Original extraction method
-    if (!data) {
-      throw new Error(
-        "Could not find ytInitialPlayerResponse or ytInitialData in the HTML. YouTube's structure may have changed."
-      );
-    }
-
-    const videoDetails = data.videoDetails;
-    if (!videoDetails) {
-      // Log the structure for debugging
-      console.error(
-        "Video details not found. Available keys:",
-        Object.keys(data)
-      );
-      console.error("Data sample:", JSON.stringify(data).substring(0, 500));
-      throw new Error("Video details not found in YouTube data");
-    }
-
-    const title = videoDetails.title || "Unknown Title";
-    const description =
-      videoDetails.shortDescription || videoDetails.description || "";
-
-    const durationSeconds = parseInt(videoDetails.lengthSeconds, 10) || 0;
-
-    const chaptersList = parseChaptersFromDescription(description);
-
-    const responseData: VideoData = {
+    // Return VideoData structure
+    return {
       id: videoId,
-      duration: durationSeconds,
       title: title,
+      duration: duration, // Return as number (seconds)
       chapters: {
-        areAutoGenerated: false,
-        chapters: chaptersList.map((c) => ({
-          title: c.title,
-          time: c.time,
-          thumbnails: [],
-          isCompleted: false,
-          isUnlocked: false,
-        })),
+        areAutoGenerated: false, // Chapters from description are not auto-generated
+        chapters: chapters,
       },
-    };
-
-    return responseData;
+    } as VideoData;
   } catch (error) {
-    console.error("Scraping failed:", error);
+    console.error("YouTube API request failed:", error);
     throw error;
   }
 }

@@ -18,7 +18,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     { className, variant = "default", size = "default", disabled, ...props },
     ref
   ) => {
-    console.log("Button props", variant);
     const variants = {
       default: "bg-primary text-primary-foreground hover:bg-primary/90",
       destructive:
