@@ -47,12 +47,7 @@ export async function getVideoInfo(id: string): Promise<VideoData> {
   const url = `https://www.youtube.com/watch?v=${videoId}`;
 
   try {
-    const response = await fetch(url, {
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-      },
-    });
+    const response = await fetch(url, { cache: "no-store" });
     const html = await response.text();
 
     const playerResponseStart = "var ytInitialPlayerResponse = ";
